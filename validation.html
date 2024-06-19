@@ -414,9 +414,16 @@ document.write(`
 <span class="n">puf_2015</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">INPUTS</span> <span class="o">/</span> <span class="s2">&quot;puf_2015.csv&quot;</span><span class="p">)</span>
 <span class="n">tc_puf_2015</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">OUTPUTS</span> <span class="o">/</span> <span class="s2">&quot;tc_puf_2015.csv&quot;</span><span class="p">)</span>
 
-<span class="n">soi_from_puf_2015</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span><span class="n">puf_to_soi</span><span class="p">(</span><span class="n">puf_2015</span><span class="p">,</span> <span class="mi">2015</span><span class="p">),</span> <span class="mi">2015</span><span class="p">)</span>
-<span class="n">soi_from_pe_puf_2015</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span><span class="n">pe_to_soi</span><span class="p">(</span><span class="n">PUF_2015</span><span class="p">,</span> <span class="mi">2015</span><span class="p">),</span> <span class="mi">2015</span><span class="p">)</span>
-<span class="n">soi_from_tc_puf_2015</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span><span class="n">tc_to_soi</span><span class="p">(</span><span class="n">tc_puf_2015</span><span class="p">,</span> <span class="mi">2015</span><span class="p">),</span> <span class="mi">2015</span><span class="p">)</span>
+<span class="n">soi_from_puf_2015</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span>
+    <span class="n">puf_to_soi</span><span class="p">(</span><span class="n">puf_2015</span><span class="p">,</span> <span class="mi">2015</span><span class="p">),</span> <span class="mi">2015</span>
+<span class="p">)</span>
+<span class="n">soi_from_pe_puf_2015</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span>
+    <span class="n">pe_to_soi</span><span class="p">(</span><span class="n">PUF_2015</span><span class="p">,</span> <span class="mi">2015</span><span class="p">),</span> <span class="mi">2015</span>
+<span class="p">)</span>
+<span class="n">soi_from_tc_puf_2015</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span>
+    <span class="n">tc_to_soi</span><span class="p">(</span><span class="n">tc_puf_2015</span><span class="p">,</span> <span class="mi">2015</span><span class="p">),</span> <span class="mi">2015</span>
+<span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">soi_statistic_passes_quality_test</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
     <span class="c1"># Relative error lower than this =&gt; OK</span>
@@ -428,11 +435,18 @@ document.write(`
     <span class="c1"># Absolute error lower than this for aggregates =&gt; OK</span>
     <span class="n">AGGREGATE_ABSOLUTE_ERROR_THRESHOLD</span> <span class="o">=</span> <span class="mf">1e9</span>
 
-    <span class="n">relative_error_ok</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Absolute relative error&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">RELATIVE_ERROR_THRESHOLD</span>
-    <span class="n">absolute_error_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Count</span><span class="p">,</span> <span class="n">COUNT_ABSOLUTE_ERROR_THRESHOLD</span><span class="p">,</span> <span class="n">AGGREGATE_ABSOLUTE_ERROR_THRESHOLD</span><span class="p">)</span>
+    <span class="n">relative_error_ok</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Absolute relative error&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">RELATIVE_ERROR_THRESHOLD</span>
+    <span class="p">)</span>
+    <span class="n">absolute_error_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">Count</span><span class="p">,</span>
+        <span class="n">COUNT_ABSOLUTE_ERROR_THRESHOLD</span><span class="p">,</span>
+        <span class="n">AGGREGATE_ABSOLUTE_ERROR_THRESHOLD</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">absolute_error_ok</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Absolute error&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">absolute_error_threshold</span>
 
     <span class="k">return</span> <span class="n">relative_error_ok</span> <span class="o">|</span> <span class="n">absolute_error_ok</span>
+
 
 <span class="c1"># 2021 datasets</span>
 
@@ -440,10 +454,18 @@ document.write(`
 <span class="n">tc_puf_2021</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">OUTPUTS</span> <span class="o">/</span> <span class="s2">&quot;tc_puf_2021.csv&quot;</span><span class="p">)</span>
 <span class="n">tmd_2021</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">OUTPUTS</span> <span class="o">/</span> <span class="s2">&quot;tmd_2021.csv&quot;</span><span class="p">)</span>
 
-<span class="n">soi_from_puf_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span><span class="n">puf_to_soi</span><span class="p">(</span><span class="n">puf_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span><span class="p">)</span>
-<span class="n">soi_from_pe_puf_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span><span class="n">pe_to_soi</span><span class="p">(</span><span class="n">PUF_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span><span class="p">)</span>
-<span class="n">soi_from_tc_puf_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span><span class="n">tc_to_soi</span><span class="p">(</span><span class="n">tc_puf_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span><span class="p">)</span>
-<span class="n">soi_from_tmd_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span><span class="n">tc_to_soi</span><span class="p">(</span><span class="n">tmd_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span><span class="p">)</span>
+<span class="n">soi_from_puf_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span>
+    <span class="n">puf_to_soi</span><span class="p">(</span><span class="n">puf_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span>
+<span class="p">)</span>
+<span class="n">soi_from_pe_puf_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span>
+    <span class="n">pe_to_soi</span><span class="p">(</span><span class="n">PUF_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span>
+<span class="p">)</span>
+<span class="n">soi_from_tc_puf_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span>
+    <span class="n">tc_to_soi</span><span class="p">(</span><span class="n">tc_puf_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span>
+<span class="p">)</span>
+<span class="n">soi_from_tmd_2021</span> <span class="o">=</span> <span class="n">compare_soi_replication_to_soi</span><span class="p">(</span>
+    <span class="n">tc_to_soi</span><span class="p">(</span><span class="n">tmd_2021</span><span class="p">,</span> <span class="mi">2021</span><span class="p">),</span> <span class="mi">2021</span>
+<span class="p">)</span>
 
 <span class="n">dataset_soi_comparisons</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">soi_from_puf_2015</span><span class="p">,</span>
@@ -452,7 +474,7 @@ document.write(`
     <span class="n">soi_from_puf_2021</span><span class="p">,</span>
     <span class="n">soi_from_pe_puf_2021</span><span class="p">,</span>
     <span class="n">soi_from_tc_puf_2021</span><span class="p">,</span>
-    <span class="n">soi_from_tmd_2021</span>
+    <span class="n">soi_from_tmd_2021</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">dataset_soi_comparisons</span><span class="p">:</span>
@@ -465,13 +487,17 @@ document.write(`
     <span class="s2">&quot;PUF (2021)&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PE PUF (2021)&quot;</span><span class="p">,</span>
     <span class="s2">&quot;TC PUF (2021)&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TMD (2021)&quot;</span>
+    <span class="s2">&quot;TMD (2021)&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
-<span class="n">comparison_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s2">&quot;Dataset&quot;</span><span class="p">:</span> <span class="n">dataset_names</span><span class="p">,</span>
-    <span class="s2">&quot;SOI match score&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;OK&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dataset_soi_comparisons</span><span class="p">]</span>
-<span class="p">})</span>
+<span class="n">comparison_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;Dataset&quot;</span><span class="p">:</span> <span class="n">dataset_names</span><span class="p">,</span>
+        <span class="s2">&quot;SOI match score&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;OK&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dataset_soi_comparisons</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 
 <span class="n">comparison_df</span>
 </pre></div>
@@ -554,8 +580,15 @@ document.write(`
 </summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">score_by_dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-    <span class="p">{</span><span class="n">dataset_name</span><span class="p">:</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Variable&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dataset_names</span><span class="p">,</span> <span class="n">dataset_soi_comparisons</span><span class="p">)}</span>
-<span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># Fillna because some variables aren&#39;t in the 2021 SOI releases.</span>
+    <span class="p">{</span>
+        <span class="n">dataset_name</span><span class="p">:</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Variable&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">dataset_names</span><span class="p">,</span> <span class="n">dataset_soi_comparisons</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+    <span class="mi">100</span>
+<span class="p">)</span>  <span class="c1"># Fillna because some variables aren&#39;t in the 2021 SOI releases.</span>
 <span class="n">score_by_dataset</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;TMD (2021)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
